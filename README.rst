@@ -92,7 +92,7 @@ See documentation link for more examples
         }
     }
 
-    # If return_namespace is left False, a plain dictionary is returned
+    # If namespace is left False, a plain dictionary is returned
 
     result = validator.validate(data, namespace=True)
 
