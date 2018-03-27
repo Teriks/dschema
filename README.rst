@@ -7,7 +7,10 @@ About dschema
 .. |Master Documentation Status| image:: https://readthedocs.org/projects/dschema/badge/?version=latest
    :target: http://dschema.readthedocs.io/en/latest/?badge=latest
 
-|Master Documentation Status| |codecov|
+.. |pypi| image:: https://badge.fury.io/py/dschema.svg
+   :target: https://badge.fury.io/py/dschema
+
+|pypi| |Master Documentation Status| |codecov|
 
 dschema is a small library for validating the content of python dictionary objects against a schema.
 
