@@ -18,5 +18,3 @@ class NamespaceTest(unittest.TestCase):
         self.assertEqual(ns.a, 1)
         self.assertEqual(ns.b, 2)
         self.assertEqual(ns.c, 'test')
-
-        self.assertEqual(str(ns), "Namespace(a=1, b=2, c='test')")
