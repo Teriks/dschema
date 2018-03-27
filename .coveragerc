@@ -1,0 +1,6 @@
+# coverage run run_tests.py
+# coverage report
+
+[run]
+branch = True
+source = dschema
