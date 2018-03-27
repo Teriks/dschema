@@ -24,10 +24,12 @@ project = 'dschema'
 copyright = '2018, Teriks'
 author = 'Teriks'
 
-# The short X.Y version
-version = ''
+
 # The full version, including alpha/beta/rc tags
-release = '0.1.0.0'
+version = dschema.__version__
+
+
+release = version
 
 
 # -- General configuration ---------------------------------------------------
