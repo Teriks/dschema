@@ -5,7 +5,7 @@ About dschema
    :target: https://codecov.io/gh/Teriks/dschema
 
 .. |Master Documentation Status| image:: https://readthedocs.org/projects/dschema/badge/?version=latest
-   :target: http://pake.readthedocs.io/en/latest/?badge=latest
+   :target: http://dschema.readthedocs.io/en/latest/?badge=latest
 
 |Master Documentation Status| |codecov|
 
