@@ -108,25 +108,33 @@ class Validator:
         """
         :param schema: Your schema definition
         """
+
+        #: schema dictionary. (reassignable)
         self.schema = schema
-        self._types = dict()
+
+        self.types = dict()
+        """Types dictionary, should contain type validator callables by name (reassignable).
+        
+           Must implement ``get(key, default)`` and ``types['key']`` like a python :py:class:`dict`."""
 
     def add_type(self, name, validation_function):
         """Register a type validation callable that can be referenced by name in the schema.
+        
+        See: :py:attr:`~dschema.Validator.types`
 
         :param name: Name which can be referenced in the schema using a string.
         :param validation_function: Associated validation function.
         """
-        self._types[name] = validation_function
+        self.types[name] = validation_function
 
     def remove_type(self, name):
         """Remove an existing type validation callable.
 
-        See: :py:func:`~dschema.Validator.add_type`
+        See: :py:func:`~dschema.Validator.add_type` and :py:attr:`~dschema.Validator.types`
 
         :param name: The name previously registered with :py:func:`~dschema.Validator.add_type`
         """
-        del self._types[name] # pragma: no cover
+        del self.types[name] # pragma: no cover
 
     @staticmethod
     def _fill_schema_defaults(node, return_namespace):
@@ -214,7 +222,7 @@ class Validator:
                     dict_node[schema_key] = default
                 else:
                     if isinstance(the_type, str):
-                        found_type = self._types.get(the_type, None)
+                        found_type = self.types.get(the_type, None)
 
                         if found_type:
                             the_type = found_type

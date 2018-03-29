@@ -17,6 +17,16 @@ import sys
 sys.path.insert(0, os.path.abspath('../..'))
 import dschema
 
+from sphinx.ext.autodoc import (
+    ClassLevelDocumenter, InstanceAttributeDocumenter)
+
+# Monkey patch for instance variable documentation problem
+
+def iad_add_directive_header(self, sig):
+    ClassLevelDocumenter.add_directive_header(self, sig)
+
+InstanceAttributeDocumenter.add_directive_header = iad_add_directive_header
+
 
 # -- Project information -----------------------------------------------------
 
