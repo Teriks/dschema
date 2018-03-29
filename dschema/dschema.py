@@ -109,7 +109,7 @@ class Validator:
         :param schema: Your schema definition
         """
 
-        #: schema dictionary. (reassignable)
+        #: schema dictionary (reassignable).
         self.schema = schema
 
         self.types = dict()
