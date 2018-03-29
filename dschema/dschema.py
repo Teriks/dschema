@@ -115,7 +115,7 @@ class Validator:
         self.types = dict()
         """Types dictionary, should contain type validator callables by name (reassignable).
         
-           Must implement ``get(key, default)`` and ``types['key']`` like a python :py:class:`dict`."""
+           Must always implement ``get(key, default)`` and ``types['key']`` like a python :py:class:`dict`."""
 
     def add_type(self, name, validation_function):
         """Register a type validation callable that can be referenced by name in the schema.
