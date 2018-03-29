@@ -23,24 +23,19 @@ __copyright__ = 'Copyright (c) 2018 Teriks'
 __license__ = 'Three Clause BSD'
 __version__ = '0.2.0.0a1'
 
-__all__ = ['Namespace',
-           'ValidationError',
-           'TypeValidationError',
-           'SchemaError',
-           'Default',
-           'Required',
-           'Dict',
-           'Type',
-           'prop',
-           'Validator']
+from .dschema import (Namespace,
+                      ValidationError,
+                      MissingKeyError,
+                      ExtraKeysError,
+                      TypeValidationError,
+                      SchemaError,
+                      SchemaDefaultError,
+                      SchemaMissingTypeError,
+                      Default,
+                      Required,
+                      Dict,
+                      Type,
+                      prop,
+                      Validator)
 
-from .dschema import Namespace, \
-    ValidationError, \
-    TypeValidationError, \
-    SchemaError, \
-    Default, \
-    Required, \
-    Dict, \
-    Type, \
-    prop, \
-    Validator
+__all__ = dschema.__all__

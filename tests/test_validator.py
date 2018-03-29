@@ -152,6 +152,175 @@ class ValidatorTest(unittest.TestCase):
         self.assertEqual(ns.a.b.c, 1)
         self.assertEqual(ns.a.b.d, 2)
 
+    def test_application_of_schema_to_defaults(self):
+        v = dschema.Validator(schema={
+            "node":
+                {
+                    dschema.Default: {"node2": {"a": 1}},
+                    "node2":
+                        {
+                            "a": dschema.prop(required=True, type=lambda x: x + 1)
+                        }
+                }
+        })
+
+        r = v.validate({"node": None}, namespace=True)
+
+        self.assertEqual(r.node.node2.a, 2)
+
+        v.schema = {
+            "node":
+                {
+                    dschema.Default: {"a": 1},
+                    "a": dschema.prop(required=True, type=lambda x: x + 1)
+                }
+        }
+
+        r = v.validate({}, namespace=True)
+
+        self.assertEqual(r.node.a, 2)
+
+        v.schema = {
+            "node":
+                {
+                    dschema.Default: {"node2": {"a": 1}},
+                    "node2":
+                        {
+                            "a": dschema.prop(required=True, type=lambda x: x + 1)
+                        }
+                }
+        }
+
+        r = v.validate({})
+
+        self.assertEqual(r['node']['node2']['a'], 2)
+
+        v.schema = {
+            "node":
+                {
+                    dschema.Default: {"a": 1},
+                    "a": dschema.prop(required=True, type=lambda x: x + 1)
+                }
+        }
+
+        r = v.validate({"node": None})
+
+        self.assertEqual(r['node']['a'], 2)
+
+        v.schema = {
+            "a": dschema.prop(default='notint', type=int)
+        }
+
+        with self.assertRaises(dschema.SchemaDefaultError) as err:
+            v.validate({})
+
+        self.assertTrue(isinstance(err.exception.validation_error, dschema.TypeValidationError))
+
+        v.schema = {
+            "a": {
+                dschema.Default: {"b": None},
+                "b": {
+                    dschema.Default: None,
+                    "c": dschema.prop(required=True, type=int)
+                }
+            }
+        }
+
+        with self.assertRaises(dschema.SchemaDefaultError) as err:
+            v.validate({})
+
+        self.assertTrue(isinstance(err.exception.validation_error, dschema.MissingKeyError))
+
+        v.schema = {
+            'a': {
+                'b': {
+                    'c': dschema.prop(default='d', type=lambda x: x + 'd')
+                },
+            }}
+
+        r = v.validate({}, namespace=True)
+
+        self.assertEqual(r.a.b.c, 'dd')
+
+        v.schema = {
+            'a': {
+                'b': {
+                    'c': dschema.prop(default='d', type=lambda x: x + 'd')
+                },
+            }}
+
+        r = v.validate({})
+
+        self.assertEqual(r['a']['b']['c'], 'dd')
+
+        v.schema = {
+            'a': {
+                'b': {
+                    'c': dschema.prop(default='notint', type=int)
+                },
+            }}
+
+        with self.assertRaises(dschema.SchemaDefaultError) as err:
+            v.validate({}, namespace=True)
+
+        self.assertTrue(isinstance(err.exception.validation_error, dschema.TypeValidationError))
+
+        with self.assertRaises(dschema.SchemaDefaultError) as err:
+            v.validate({})
+
+        self.assertTrue(isinstance(err.exception.validation_error, dschema.TypeValidationError))
+
+        v.schema = {
+            'a': {
+                'b': {
+                    'c': {
+                        dschema.Default: {'d': 4},
+                        "d": dschema.prop(default=3)
+                    }
+                },
+            }
+        }
+
+        r = v.validate({}, namespace=True)
+
+        self.assertTrue(r.a.b.c.d, 4)
+
+        v.schema = {
+            'a': {
+                'b': {
+                    'c': {
+                        dschema.Default: {'d': 4},
+                        "d": dschema.prop(default=3)
+                    }
+                },
+            }
+        }
+
+        r = v.validate({})
+
+        self.assertTrue(r['a']['b']['c']['d'], 4)
+
+        v.schema = {
+            'a': {
+                'b': {
+                    'c': {
+                        dschema.Default: {'d': 'notint'},
+                        "d": dschema.prop(type=int)
+                    }
+                },
+            }
+        }
+
+        with self.assertRaises(dschema.SchemaDefaultError) as err:
+            v.validate({}, namespace=True)
+
+        self.assertTrue(isinstance(err.exception.validation_error, dschema.TypeValidationError))
+
+        with self.assertRaises(dschema.SchemaDefaultError) as err:
+            v.validate({})
+
+        self.assertTrue(isinstance(err.exception.validation_error, dschema.TypeValidationError))
+
     def test_fill_defaults_algorithm(self):
         # test the defaults filler algorithm
 
@@ -167,7 +336,7 @@ class ValidatorTest(unittest.TestCase):
             }
         }
 
-        r = v._fill_schema_defaults(schema, True)
+        r = v._fill_schema_defaults(schema, '.', True)
 
         self.assertTrue(hasattr(r, 'l'))
 
@@ -178,27 +347,27 @@ class ValidatorTest(unittest.TestCase):
 
         self.assertDictEqual(r.a.b, {'test2': 2})
 
-        r = v._fill_schema_defaults(schema, False)
+        r = v._fill_schema_defaults(schema, '.', False)
 
         self.assertDictEqual(r, {'l': {'m': {'test1': 1}}, 'a': {'b': {'test2': 2}}})
 
-        r = v._fill_schema_defaults({dschema.Default: 1}, False)
+        r = v._fill_schema_defaults({dschema.Default: 1}, '.', False)
 
         self.assertEqual(r, 1)
 
-        r = v._fill_schema_defaults({dschema.Default: {'test': 1}}, True)
+        r = v._fill_schema_defaults({dschema.Default: {'test': 1}}, '.', True)
 
         self.assertEqual(type(r), dschema.Namespace)
         self.assertTrue(hasattr(r, 'test'))
         self.assertEqual(r.test, 1)
 
-        r = v._fill_schema_defaults({dschema.Dict: True, dschema.Default: {'test': 1}}, True)
+        r = v._fill_schema_defaults({dschema.Dict: True, dschema.Default: {'test': 1}}, '.', True)
 
         self.assertEqual(type(r), dict)
         self.assertIn('test', r)
         self.assertEqual(r['test'], 1)
 
-        r = v._fill_schema_defaults({dschema.Dict: True, dschema.Default: {'test': 1}}, False)
+        r = v._fill_schema_defaults({dschema.Dict: True, dschema.Default: {'test': 1}}, '.', False)
 
         self.assertEqual(type(r), dict)
         self.assertIn('test', r)
@@ -222,12 +391,12 @@ class ValidatorTest(unittest.TestCase):
             'integer': 1
         }
 
-        with self.assertRaises(dschema.ValidationError):
+        with self.assertRaises(dschema.MissingKeyError):
             validator.validate(data)
 
         data = {'integer': 1}
 
-        with self.assertRaises(dschema.ValidationError):
+        with self.assertRaises(dschema.MissingKeyError):
             validator.validate(data)
 
         data = {
@@ -237,9 +406,6 @@ class ValidatorTest(unittest.TestCase):
             },
             'integer': 'notinteger'
         }
-
-        with self.assertRaises(dschema.ValidationError):
-            validator.validate(data)
 
         with self.assertRaises(dschema.TypeValidationError):
             validator.validate(data)
@@ -256,7 +422,7 @@ class ValidatorTest(unittest.TestCase):
             'no_type_validator': dschema.prop(required=True, type='int')
         }
 
-        with self.assertRaises(dschema.SchemaError):
+        with self.assertRaises(dschema.SchemaMissingTypeError):
             dschema.Validator(schema).validate({'no_type_validator': 1})
 
     def test_dict(self):
@@ -293,7 +459,7 @@ class ValidatorTest(unittest.TestCase):
             }
         })
 
-        with self.assertRaises(dschema.ValidationError):
+        with self.assertRaises(dschema.ExtraKeysError):
             validator.validate({
                 'namespace': {
                     'nested': {
@@ -303,7 +469,7 @@ class ValidatorTest(unittest.TestCase):
                 }
             })
 
-        with self.assertRaises(dschema.ValidationError):
+        with self.assertRaises(dschema.ExtraKeysError):
             validator.validate({
                 'namespace': {
                     'nested': {
@@ -313,7 +479,7 @@ class ValidatorTest(unittest.TestCase):
                 }
             })
 
-        with self.assertRaises(dschema.ValidationError):
+        with self.assertRaises(dschema.ExtraKeysError):
             validator.validate({
                 'namespace': {
                     'nested': {

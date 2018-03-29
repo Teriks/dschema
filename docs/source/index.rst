@@ -35,17 +35,24 @@ Defining schema with text
  :language: python
 
 
+Defining default Values
+-----------------------
+
+.. literalinclude:: ../../examples/example3-default-values.py
+ :language: python
+
+
 Handling validation errors
 --------------------------
 
-.. literalinclude:: ../../examples/example3-handle-validation-errors.py
+.. literalinclude:: ../../examples/example4-handle-validation-errors.py
  :language: python
 
 
 Handling schema definition errors
 ---------------------------------
 
-.. literalinclude:: ../../examples/example4-handle-schema-errors.py
+.. literalinclude:: ../../examples/example5-handle-schema-errors.py
  :language: python
 
 

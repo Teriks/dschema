@@ -1,10 +1,8 @@
 import dschema
 
-# These are the only two cases currently in which this
-# exception is raised.
 
-# One is when you specify a required property as having
-# a default value.
+# specifying a required property as
+# having a default value.
 
 schema = {
     'bad': dschema.prop(required=True, default='cant-have-both')
@@ -18,7 +16,7 @@ except dschema.SchemaError as e:
     print(e)
 
 
-# The other is when you don't provide a validation handler
+# Not providing a validation handler
 # for a type specified as a string
 
 schema = {
@@ -35,8 +33,33 @@ try:
 
     validator.validate({'no_type_validator': 1})
 
-except dschema.SchemaError as e:
+except dschema.SchemaMissingTypeError as e:
 
     # Message about:
     # 'no_type_validator' schema type callable 'int' not provided.
+    print(e)
+
+# providing a default value that does
+# not validate against the schema
+
+schema = {
+    'node':
+        {
+            dschema.Default: {'bad': {'prop': 'notint'}},
+            'bad': {
+                'prop': dschema.prop(type=int)
+             }
+        }
+}
+
+try:
+    validator = dschema.Validator(schema)
+
+    validator.validate({})
+
+except dschema.SchemaDefaultError as e:
+
+    # Message about:
+    # 'bad.prop' failed type validation: invalid literal for
+    # int() with base 10: 'notint'
     print(e)
