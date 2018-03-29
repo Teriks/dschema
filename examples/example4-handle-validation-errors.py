@@ -27,7 +27,7 @@ data = {
 
 try:
     validator.validate(data)
-except dschema.ValidationError as e:
+except dschema.MissingKeyError as e:
     # message about 'app_auth.id' being required but missing...
     print(e)
 
@@ -35,7 +35,7 @@ data = {'integer': 1}
 
 try:
     validator.validate(data)
-except dschema.ValidationError as e:
+except dschema.MissingKeyError as e:
     # message about 'app_auth' being required but missing...
     print(e)
 
@@ -84,7 +84,7 @@ data = {
 
 try:
     validator.validate(data)
-except dschema.ValidationError as e:
+except dschema.ExtraKeysError as e:
     # Message about:
     # namespace 'app_auth' containing extraneous keys {'extra_stuff'}
     print(e)
