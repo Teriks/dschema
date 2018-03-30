@@ -3,7 +3,7 @@ Welcome to dschema's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: API Documentation:
+   :caption: API Documentation
    
    dschema
 
@@ -18,42 +18,18 @@ dschema was made for validating config files written in JSON, and allows for spe
 required and default property values, and also custom type validation.
 
 
-Examples
-========
+Usage
+=====
 
-Defining schema with code
--------------------------
+.. toctree::
+   :maxdepth: 2
 
-.. literalinclude:: ../../examples/example1-basic.py
- :language: python
+   defining_schema_with_code
+   defining_schema_with_text
+   defining_default_values
+   handling_validation_errors
+   handling_schema_definition_errors
 
-
-Defining schema with text
--------------------------
-
-.. literalinclude:: ../../examples/example2-text-schema.py
- :language: python
-
-
-Defining default Values
------------------------
-
-.. literalinclude:: ../../examples/example3-default-values.py
- :language: python
-
-
-Handling validation errors
---------------------------
-
-.. literalinclude:: ../../examples/example4-handle-validation-errors.py
- :language: python
-
-
-Handling schema definition errors
----------------------------------
-
-.. literalinclude:: ../../examples/example5-handle-schema-errors.py
- :language: python
 
 
 Indices and tables
