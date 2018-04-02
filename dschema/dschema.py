@@ -129,6 +129,8 @@ Dict = '@dict'
 #: Used to define a custom validation function for a schema node/property
 Type = '@type'
 
+__VALID_PROP_ARGS = {'default', 'required', 'type', 'dict'}
+
 
 def prop(**kwargs):
     r"""Helper that returns a schema property specification from keyword arguments.
@@ -146,8 +148,11 @@ def prop(**kwargs):
         * *dict* (``bool``) --
           Should the value be interpreted as a raw nested dictionary?
     """
+
     r = dict()
     for k, v in kwargs.items():
+        if k not in __VALID_PROP_ARGS:
+            raise ValueError('Unexpected parameter "{}".'.format(k))
         r['@' + k] = v
     return r
 
