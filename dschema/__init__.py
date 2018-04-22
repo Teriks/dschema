@@ -21,7 +21,7 @@
 __author__ = 'Teriks'
 __copyright__ = 'Copyright (c) 2018 Teriks'
 __license__ = 'Three Clause BSD'
-__version__ = '0.3.1.0a1'
+__version__ = '0.3.1.1a1'
 
 from .dschema import (Namespace,
                       ValidationError,
